@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import Auth from '../Components/Auth'
 import { Col, Container, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
 import Header from '../Components/Header'
-
-
+import { TokenAuthContext } from '../Contexts/TokenContext'
+import { Link } from 'react-router-dom'
 
 
 function LandingPage({ insideLandingPage, insideLogin }) {
+    const {isAuthorised, setIsAuthorised}=useContext(TokenAuthContext)
+    
     return (
+
         <>
         <Header></Header>
             <Container>
@@ -25,12 +27,15 @@ function LandingPage({ insideLandingPage, insideLogin }) {
 
                             <div className='my-5'>
 
-                                {insideLandingPage ?
-                                    <Link to={'/login'}><button className='btn btn-primary btn-lg'> Get Started</button></Link>
-                                    :
-                                    <h3>Please Login to continue</h3>
+                                {isAuthorised?
+                                <Link to={'/tracker'}><button className='btn btn-primary btn-lg'>Track your Expenses</button></Link>
+                                :(insideLandingPage? <Link to={'/login'}><button className='btn btn-primary btn-lg '>Get Started</button></Link>
+                                :<div>Please Login to Continue</div>
+                                )
+                               
                                 }
                             </div>
+                            
                         </div>
                     </Col>
                     <Col>

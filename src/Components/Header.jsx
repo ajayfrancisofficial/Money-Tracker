@@ -1,10 +1,22 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { TokenAuthContext } from '../Contexts/TokenContext';
 
 
-function Header({ insideTracker }) {
+function Header(insideTracker) {
+    const { isAuthorised, setIsAuthorised } = useContext(TokenAuthContext)
+    useEffect(() => {
+        const name = sessionStorage.getItem("name")
+    }, [])
+    const navigate = useNavigate()
+    const handleLogout = () => {
+        sessionStorage.clear()
+        setIsAuthorised(false)
+        navigate('/')
+    }
+    const name = sessionStorage.getItem("name")
     return (
         <> <Navbar expand="lg" className="bg-primary ">
             <Container>
@@ -13,9 +25,10 @@ function Header({ insideTracker }) {
                         Tracky
                     </h1>
                 </Link>
-                {insideTracker&&<Link to={''} className=' ' style={{ textDecoration: 'none' }}>
-              <h6 className='text-info '>Logout</h6>
-            </Link>}
+                {name ? <button onClick={handleLogout} className='btn-primary btn'>Logout{` (${name})`}</button>
+                    :
+                    <Link to={'/login'}><button className='btn-primary btn'>Login</button></Link>
+                }
             </Container>
         </Navbar></>
     )
