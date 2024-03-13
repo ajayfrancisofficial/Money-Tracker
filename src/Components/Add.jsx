@@ -37,7 +37,7 @@ function Add() {
                 }
                 try {
                     const result = await addAPI(newTransaction, reqHeader)
-                    console.log(result);
+                    // console.log(result);
                     if (result.status == 200) {
                         // toast.success("Transaction added")
                         setNewTransaction({ title:"", amount:"", type: "", dateAndTime: "", description: "" })

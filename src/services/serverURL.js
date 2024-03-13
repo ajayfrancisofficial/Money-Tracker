@@ -1,2 +1,2 @@
-const SERVER_URL="https://money-tracker-server-r8hd.onrender.com"
+const SERVER_URL="https://money-tracker-server-g32m.onrender.com"
 export default SERVER_URL

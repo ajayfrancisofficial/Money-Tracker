@@ -1,15 +1,17 @@
-import React, {  useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Table } from 'react-bootstrap'
 import { deleteTransactionAPI, getUserTransactionsAPI } from '../services/allAPI'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addResponseContext } from '../Contexts/AddContext';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,Label} from 'recharts';
+
 
 
 function TransactionHistories() {
-    const { addResponse, setAddResponse }=useContext(addResponseContext)
+    const { addResponse, setAddResponse } = useContext(addResponseContext)
     const [userTransactions, setUserTransactions] = useState([])
-    const [balance,setBalance]=useState(0)
+    const [balance, setBalance] = useState(0)
     const getUserTransactions = async () => {
         const token = sessionStorage.getItem("token")
         if (token) {
@@ -31,16 +33,14 @@ function TransactionHistories() {
         }
 
     }
-    // console.log(userTransactions);
+    console.log(userTransactions);
     useEffect(() => {
         getUserTransactions()
     }, [addResponse])
-    const reloadBalance=()=>{
-        setBalance(userTransactions.map(i=>i.amount).reduce((a,b)=>a+b))
+    const reloadBalance = () => {
+        setBalance(userTransactions.map(i => i.amount).reduce((a, b) => a + b))
     }
-    
-    
-    
+
     const handleDeleteTransaction = async (tid) => {
         const token = sessionStorage.getItem("token")
         if (token) {
@@ -100,7 +100,7 @@ function TransactionHistories() {
                                 <td>{transaction.description}</td>
                                 <td><button onClick={() => handleDeleteTransaction(transaction._id)} className='btn btn-link text-danger'><i class="fa-solid fa-trash"></i></button></td>
                             </tr>
-                            )
+                        )
                             :
                             <p className='text-warning mt-4'>No Transactions added yet!!!</p>
                         }
@@ -110,10 +110,36 @@ function TransactionHistories() {
             </div>
             <ToastContainer autoClose={4000} theme='colored'></ToastContainer>
             <div className='text-center d-flex'>
-                
-            <h6 className='fw-bolder ms-4'>Balance: Rs {balance} /-</h6>
-            <button className='btn btn-primary btn-sm mb-3 ms-2' onClick={reloadBalance} ><i class="fa-solid fa-rotate-right"></i></button>
-        </div>
+
+                <h6 className='fw-bolder ms-4'>Balance: Rs {balance} /-</h6>
+                <button className='btn btn-primary btn-sm mb-3 ms-2' onClick={reloadBalance} ><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+            <div className='' >
+                <h1 className='m-5'>Your transaction Graph</h1>
+
+
+            <div className='border m-3'>
+                    <LineChart 
+                        width={500}
+                        height={300}
+                        data={userTransactions}
+                        margin={{
+                            top: 30,
+                            right: 30,
+                            left: 30,
+                            bottom: 30,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis label={{ value: 'Title (sorted by time)',offset:-10, position: 'insideBottom' }}   dataKey="title"/>
+                        <YAxis  label={{ value: 'Amount', angle: -90,offset:-10, position: 'insideLeft' }} dataKey="amount" />
+                        <Tooltip />
+                        <Line type="monotone"   dataKey="amount" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    </LineChart>
+            </div>
+
+            </div>
+
         </div>
 
     )
